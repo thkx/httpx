@@ -93,7 +93,7 @@ impl HttpServer {
             }
         }
 
-        let resp_str: String = HttpResponse::from(resp).into();
+        let resp_str: String = resp.into();
         if let Err(e) = stream.write_all(resp_str.as_bytes()) {
             println!("response write error: {}", e);
         }

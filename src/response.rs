@@ -41,7 +41,6 @@ impl Default for HttpResponse {
             headers: {
                 let mut header = HashMap::new();
                 header.insert("Content-Type".to_string(), "text/html".to_string());
-                header.insert("Access-Control-Allow-Origin".to_string(), "*".to_owned());
                 header
             },
             body: None,

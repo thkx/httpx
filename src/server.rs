@@ -17,6 +17,7 @@ pub struct HttpServer {
     addr: String,
     router: Arc<Router>,
     pool: ThreadPool,
+    response: HttpResponse,
 }
 
 impl HttpServer {
@@ -39,8 +40,10 @@ impl HttpServer {
         self
     }
 
-    pub fn mount_header() -> &mut Self {
-        
+    pub fn mount_header(&mut self, key: &str, value: &str) -> &mut Self {
+        self.response.insert_header(key, value);
+        // header.insert("Access-Control-Allow-Origin".to_string(), "*".to_owned());
+        self
     }
 
     /// 启动Http服务
@@ -75,7 +78,7 @@ impl HttpServer {
         let router = self.router.clone();
         self.pool.execute(move || {
             let request = Self::parse_stream(&mut stream);
-            let mut resp = HttpResponse::default();
+            let mut resp = self.response;
 
             match router.get_handler(request.method, &request.uri) {
                 Ok(s) => {
@@ -132,6 +135,7 @@ impl HttpServer {
             addr: "127.0.0.1:8080".parse().unwrap(),
             router: Arc::new(Router::new()),
             pool: ThreadPool::new(cpu_num + 1),
+            response: HttpResponse::default(),
         }
     }
 }

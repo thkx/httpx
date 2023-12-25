@@ -77,7 +77,7 @@ impl HttpServer {
         // println!("process stream");
         let router = self.router.clone();
         let request = Self::parse_stream(&mut stream);
-        let mut resp = self.response.clone();
+        let mut resp = HttpResponse::from(self.response.clone());
 
         match router.get_handler(request.method, &request.uri) {
             Ok(s) => {

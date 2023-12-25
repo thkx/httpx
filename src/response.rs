@@ -6,7 +6,7 @@ pub trait StateCode<T> {
     fn set_http_state_code(&mut self, state_code: T) -> &mut Self;
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Version {
     V1_1,
     V2_0,
@@ -23,7 +23,7 @@ impl From<Version> for String {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct HttpResponse {
     // connection: &'a mut TcpStream,
     pub version: Version,

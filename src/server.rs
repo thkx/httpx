@@ -84,7 +84,7 @@ impl HttpServer {
                 // println!("{}", "executor");
                 resp.set_http_state_code(HttpStateCode::StatusOK);
                 let handler = s.handler;
-                handler(&request, &mut resp.clone());
+                handler(&request, &mut resp);
             }
             Err(e) => {
                 println!("err: {}", e);

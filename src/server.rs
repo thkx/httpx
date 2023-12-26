@@ -6,7 +6,7 @@ use std::{
 
 use num_cpus;
 
-use crate::{pool::ThreadPool, HttpRequest, HttpResponse, HttpStateCode, Router};
+use crate::{ThreadPool, HttpRequest, HttpResponse, HttpStateCode, Router};
 
 pub(crate) trait Executor {
     fn executor(&self, stream: TcpStream);
@@ -76,50 +76,50 @@ impl HttpServer {
     fn executor(&self, mut stream: TcpStream) {
         // println!("process stream");
         let router = self.router.clone();
-        let request = Self::parse_stream(&mut stream);
+        // let request = Self::parse_stream(&mut stream);
         let mut resp = HttpResponse::from(self.response.clone());
 
-        match router.get_handler(request.method, &request.uri) {
-            Ok(s) => {
-                // println!("{}", "executor");
-                resp.set_http_state_code(HttpStateCode::StatusOK);
-                let handler = s.handler;
-                handler(&request, &mut resp);
-            }
-            Err(e) => {
-                println!("err: {}", e);
-                // HttpResponse::new().write_str(&e);
-                // return;
-            }
-        }
-
-        let resp_str: String = resp.into();
-        if let Err(e) = stream.write_all(resp_str.as_bytes()) {
-            println!("response write error: {}", e);
-        }
-        // self.pool.execute(move || {
-        //     let request = Self::parse_stream(&mut stream);
-        //     let mut resp = self.response.clone();
-
-        //     match router.get_handler(request.method, &request.uri) {
-        //         Ok(s) => {
-        //             // println!("{}", "executor");
-        //             resp.set_http_state_code(HttpStateCode::StatusOK);
-        //             let handler = s.handler;
-        //             handler(&request, &mut resp);
-        //         }
-        //         Err(e) => {
-        //             println!("err: {}", e);
-        //             // HttpResponse::new().write_str(&e);
-        //             // return;
-        //         }
+        // match router.get_handler(request.method, &request.uri) {
+        //     Ok(s) => {
+        //         // println!("{}", "executor");
+        //         resp.set_http_state_code(HttpStateCode::StatusOK);
+        //         let handler = s.handler;
+        //         handler(&request, &mut resp);
         //     }
-
-        //     let resp_str: String = resp.into();
-        //     if let Err(e) = stream.write_all(resp_str.as_bytes()) {
-        //         println!("response write error: {}", e);
+        //     Err(e) => {
+        //         println!("err: {}", e);
+        //         // HttpResponse::new().write_str(&e);
+        //         // return;
         //     }
-        // });
+        // }
+
+        // let resp_str: String = resp.into();
+        // if let Err(e) = stream.write_all(resp_str.as_bytes()) {
+        //     println!("response write error: {}", e);
+        // }
+        self.pool.execute(move || {
+            let request = Self::parse_stream(&mut stream);
+            // let mut resp = HttpResponse::default();
+
+            match router.get_handler(request.method, &request.uri) {
+                Ok(s) => {
+                    // println!("{}", "executor");
+                    resp.set_http_state_code(HttpStateCode::StatusOK);
+                    let handler = s.handler;
+                    handler(&request, &mut resp);
+                }
+                Err(e) => {
+                    println!("err: {}", e);
+                    // HttpResponse::new().write_str(&e);
+                    // return;
+                }
+            }
+
+            let resp_str: String = resp.into();
+            if let Err(e) = stream.write_all(resp_str.as_bytes()) {
+                println!("response write error: {}", e);
+            }
+        });
     }
 
     fn parse_stream(stream: &mut TcpStream) -> HttpRequest {

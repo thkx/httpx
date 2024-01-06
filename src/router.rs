@@ -54,24 +54,108 @@ impl Router {
         Self::default()
     }
 
+    /// 将route注册进Router中
+    ///
+    /// 1:使用闭包方式注册
+    /// ```
+    /// use httpx::{
+    ///     Method,
+    ///     HttpResuest,
+    ///     HttpResponse,
+    ///     Router, RouterHandler,
+    ///     HttpServer,
+    /// };
+    /// let mut router = Router::new();
+    /// router.get("/", |_r, w| {
+    ///     w.write_str("hello world");
+    /// });
+    /// router.get("/hi", route_fn);
+    /// fn route_fn(_r: &HttpResuest, w: &mut HttpResponse) {
+    ///     w.insert_header("Content-Type", "text/html;charset=utf-8");
+    ///     w.write_str("你好Rust");
+    /// }
+    /// ```
     pub fn get(&mut self, path: &str, handler: Handler) -> &Self {
         let h = RouterHandler::new(Method::GET, path, handler);
         self.insert(h);
         self
     }
 
+    /// 将route注册进Router中
+    ///
+    /// 1:使用闭包方式注册
+    /// ```
+    /// use httpx::{
+    ///     Method,
+    ///     HttpResuest,
+    ///     HttpResponse,
+    ///     Router, RouterHandler,
+    ///     HttpServer,
+    /// };
+    /// let mut router = Router::new();
+    /// router.post("/", |_r, w| {
+    ///     w.write_str("hello world");
+    /// });
+    /// router.post("/hi", route_fn);
+    /// fn route_fn(_r: &HttpResuest, w: &mut HttpResponse) {
+    ///     w.insert_header("Content-Type", "text/html;charset=utf-8");
+    ///     w.write_str("你好Rust");
+    /// }
+    /// ```
     pub fn post(&mut self, path: &str, handler: Handler) -> &Self {
         let h = RouterHandler::new(Method::POST, path, handler);
         self.insert(h);
         self
     }
 
+    /// 将route注册进Router中
+    ///
+    /// 1:使用闭包方式注册
+    /// ```
+    /// use httpx::{
+    ///     Method,
+    ///     HttpResuest,
+    ///     HttpResponse,
+    ///     Router, RouterHandler,
+    ///     HttpServer,
+    /// };
+    /// let mut router = Router::new();
+    /// router.put("/", |_r, w| {
+    ///     w.write_str("hello world");
+    /// });
+    /// router.put("/hi", route_fn);
+    /// fn route_fn(_r: &HttpResuest, w: &mut HttpResponse) {
+    ///     w.insert_header("Content-Type", "text/html;charset=utf-8");
+    ///     w.write_str("你好Rust");
+    /// }
+    /// ```
     pub fn put(&mut self, path: &str, handler: Handler) -> &Self {
         let h = RouterHandler::new(Method::PUT, path, handler);
         self.insert(h);
         self
     }
 
+    /// 将route注册进Router中
+    ///
+    /// 1:使用闭包方式注册
+    /// ```
+    /// use httpx::{
+    ///     Method,
+    ///     HttpResuest,
+    ///     HttpResponse,
+    ///     Router, RouterHandler,
+    ///     HttpServer,
+    /// };
+    /// let mut router = Router::new();
+    /// router.delete("/", |_r, w| {
+    ///     w.write_str("hello world");
+    /// });
+    /// router.delete("/hi", route_fn);
+    /// fn route_fn(_r: &HttpResuest, w: &mut HttpResponse) {
+    ///     w.insert_header("Content-Type", "text/html;charset=utf-8");
+    ///     w.write_str("你好Rust");
+    /// }
+    /// ```
     pub fn delete(&mut self, path: &str, handler: Handler) -> &Self {
         let h = RouterHandler::new(Method::DELETE, path, handler);
         self.insert(h);
@@ -213,7 +297,7 @@ impl Router {
     ///
     /// 1:使用闭包方式注册
     /// ```
-    /// use my_chat::{
+    /// use httpx::{
     ///     Method,
     ///     HttpResuest,
     ///     HttpResponse,
